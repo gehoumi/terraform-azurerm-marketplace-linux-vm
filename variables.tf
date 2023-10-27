@@ -98,13 +98,13 @@ variable "interfaces" {
   ```
   [
     {
-      name                 = "fw-mgmt"
+      name                 = "mgmt"
       subnet_id            = azurerm_subnet.my_mgmt_subnet.id
       public_ip_address_id = azurerm_public_ip.my_mgmt_ip.id
       create_public_ip     = true
     },
     {
-      name                = "fw-public"
+      name                = "public"
       subnet_id           = azurerm_subnet.my_pub_subnet.id
       create_public_ip    = false
       public_ip_name      = "fw-public-ip"
@@ -133,12 +133,6 @@ variable "boot_diagnostics" {
 variable "size" {
   description = "The SKU which should be used for this Virtual Machine. Consult the cisco Deployment Guide as only a few selected sizes are supported."
   default     = "Standard_D3_v2"
-  type        = string
-}
-
-variable "custom_image_id" {
-  description = "Absolute ID of your own Custom Image to be used for creating new VM-Series. If set, the `username`, `password`, `img_version`, `img_publisher`, `img_offer`, `img_sku` inputs are all ignored (these are used only for published images, not custom ones). The Custom Image is expected to contain PAN-OS software."
-  default     = null
   type        = string
 }
 
@@ -202,7 +196,7 @@ variable "identity" {
 }
 
 variable "accelerated_networking" {
-  description = "Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one (it is the PAN-OS management interface, which [does not support](https://docs.paloaltonetworks.com/pan-os/9-0/pan-os-new-features/virtualization-features/support-for-azure-accelerated-networking-sriov) acceleration)."
+  description = "Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one."
   default     = true
   type        = bool
 }

@@ -166,7 +166,7 @@ variable "identity" {
 }
 
 variable "accelerated_networking" {
-  description = "Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one (it is the PAN-OS management interface, which [does not support](https://docs.paloaltonetworks.com/pan-os/9-0/pan-os-new-features/virtualization-features/support-for-azure-accelerated-networking-sriov) acceleration)."
+  description = "Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one."
   default     = true
   type        = bool
 }

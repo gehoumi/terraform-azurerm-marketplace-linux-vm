@@ -24,46 +24,40 @@ Once we have this detail we can now use these elements to build out the storage_
 
 ```bash
 
-module "ciscov" {
-  source = "./ciscoasav"
+module "ftdv" {
+  source = "../.."
 
-  location            = var.location
-  resource_group_name = azurerm_resource_group.this.name
-  name                = var.name
-  admin_username      = var.username
-  admin_password      = random_password.this.result
+  name                         = "FTDv"
+  resource_group_name          = "mygroup_name"
   accept_marketplace_agreement = true
-
-  interfaces = [
-    {
-      name             = "${var.name}-mgmt"
-      subnet_id        = lookup(module.vnet.subnet_ids, "management", null)
-      create_public_ip = true
-    },
-    {
-      name      = "${var.name}-inside"
-      subnet_id = lookup(module.vnet.subnet_ids, "inside", null)
-    },
-    {
-      name      = "${var.name}-outside"
-      subnet_id = lookup(module.vnet.subnet_ids, "outside", null)
-    },
-    {
-      name      = "${var.name}-inside3"
-      subnet_id = lookup(module.vnet.subnet_ids, "inside3", null)
-    }
-
-  ]
-
-  source_image_reference = {
+  source_image_reference       = {
     offer     = "cisco-ftdv"
     publisher = "cisco"
     sku       = "ftdv-azure-byol"
     version   = "74.1.132"
-   }
-
-  boot_diagnostics = true
-
+  }
+  boot_diagnostics             = true
+  interfaces                   = {
+    "if-nic0" = {
+      name                            = "management-subnet-0"
+      address_prefixes                = ["10.100.0.0/24"]
+      network_security_group          = "management-security-group"
+      enable_storage_service_endpoint = true
+    },
+    "if-nic1" = {
+      name             = "private-subnet-1"
+      address_prefixes = ["10.100.1.0/24"]
+    },
+    "if-nic2" = {
+      name                   = "private-subnet-2"
+      address_prefixes       = ["10.100.2.0/24"]
+      network_security_group = "outside-security-group"
+    },
+    "if-nic3" = {
+      name             = "private-subnet-3"
+      address_prefixes = ["10.100.3.0/24"]
+    },
+  }
 }
 
 ```
@@ -104,7 +98,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_accelerated_networking"></a> [accelerated\_networking](#input\_accelerated\_networking) | Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one (it is the PAN-OS management interface, which [does not support](https://docs.paloaltonetworks.com/pan-os/9-0/pan-os-new-features/virtualization-features/support-for-azure-accelerated-networking-sriov) acceleration). | `bool` | `true` | no |
+| <a name="input_accelerated_networking"></a> [accelerated\_networking](#input\_accelerated\_networking) | Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one. | `bool` | `true` | no |
 | <a name="input_accept_marketplace_agreement"></a> [accept\_marketplace\_agreement](#input\_accept\_marketplace\_agreement) | Allows accepting the Legal Terms for a Marketplace Image, when using bring your own license.<br>You don't need set to `true` when you have already accepted the legal terms on your current subscription.<br>Check available in market place: az vm image list -o table --publisher cisco --offer cisco-Virtual Appliance --all<br>https://azuremarketplace.microsoft.com/en-us/home | `bool` | `false` | no |
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | (Optional) The Password which should be used for the local-administrator on this Virtual Machine Required when using Windows Virtual Machine. Changing this forces a new resource to be created. When an `admin_password` is specified `disable_password_authentication` must be set to `false`. One of either `admin_password` or `admin_ssh_key` must be specified. | `string` | `null` | no |
 | <a name="input_admin_ssh_keys"></a> [admin\_ssh\_keys](#input\_admin\_ssh\_keys) | set(object({<br>  public\_key = "(Required) The Public Key which should be used for authentication, which needs to be at least 2048-bit and in `ssh-rsa` format. Changing this forces a new resource to be created."<br>  username   = "(Optional) The Username for which this Public SSH Key should be configured. Changing this forces a new resource to be created. The Azure VM Agent only allows creating SSH Keys at the path `/home/{admin_username}/.ssh/authorized_keys` - as such this public key will be written to the authorized keys file. If no username is provided this module will use var.admin\_username."<br>})) | <pre>set(object({<br>    public_key = string<br>    username   = optional(string)<br>  }))</pre> | `[]` | no |
@@ -117,14 +111,13 @@ No modules.
 | <a name="input_bootstrap_options"></a> [bootstrap\_options](#input\_bootstrap\_options) | Bootstrap options to pass to Virtual Appliance, refer to the provider documentation. | `string` | `""` | no |
 | <a name="input_computer_name"></a> [computer\_name](#input\_computer\_name) | (Optional) Specifies the Hostname which should be used for this Virtual Machine. If unspecified this defaults to the value for the `vm_name` field. If the value of the `vm_name` field is not a valid `computer_name`, then you must specify `computer_name`. Changing this forces a new resource to be created. | `string` | `null` | no |
 | <a name="input_custom_data"></a> [custom\_data](#input\_custom\_data) | (Optional) The Base64-Encoded Custom Data which should be used for this Virtual Machine. Changing this forces a new resource to be created. | `string` | `null` | no |
-| <a name="input_custom_image_id"></a> [custom\_image\_id](#input\_custom\_image\_id) | Absolute ID of your own Custom Image to be used for creating new VM-Series. If set, the `username`, `password`, `img_version`, `img_publisher`, `img_offer`, `img_sku` inputs are all ignored (these are used only for published images, not custom ones). The Custom Image is expected to contain PAN-OS software. | `string` | `null` | no |
 | <a name="input_disable_password_authentication"></a> [disable\_password\_authentication](#input\_disable\_password\_authentication) | (Optional) Should Password Authentication be disabled on this Virtual Machine? Defaults to `true`. Changing this forces a new resource to be created. | `bool` | `false` | no |
 | <a name="input_enable_plan"></a> [enable\_plan](#input\_enable\_plan) | Enable usage of the Offer/Plan on Azure Marketplace. Even plan sku "byol", which means "bring your own license", still requires accepting on the Marketplace. Can be set to `false` when using a custom image. | `bool` | `true` | no |
 | <a name="input_enable_zones"></a> [enable\_zones](#input\_enable\_zones) | If false, the input `avzone` is ignored and also all created Public IP addresses default to not to use Availability Zones (the `No-Zone` setting). It is intended for the regions that do not yet support Availability Zones. | `bool` | `true` | no |
 | <a name="input_encryption_at_host_enabled"></a> [encryption\_at\_host\_enabled](#input\_encryption\_at\_host\_enabled) | (Optional) Should all of the disks (including the temp disk) attached to this Virtual Machine be encrypted by enabling Encryption at Host? | `bool` | `false` | no |
 | <a name="input_extensions_time_budget"></a> [extensions\_time\_budget](#input\_extensions\_time\_budget) | (Optional) Specifies the duration allocated for all extensions to start. The time duration should be between 15 minutes and 120 minutes (inclusive) and should be specified in ISO 8601 format. Defaults to 90 minutes (`PT1H30M`). | `string` | `"PT1H30M"` | no |
 | <a name="input_identity"></a> [identity](#input\_identity) | object({<br>  type         = "(Required) Specifies the type of Managed Service Identity that should be configured on this Linux Virtual Machine. Possible values are `SystemAssigned`, `UserAssigned`, `SystemAssigned, UserAssigned` (to enable both)."<br>  identity\_ids = "(Optional) Specifies a list of User Assigned Managed Identity IDs to be assigned to this Linux Virtual Machine. This is required when `type` is set to `UserAssigned` or `SystemAssigned, UserAssigned`."<br>}) | <pre>object({<br>    type         = string<br>    identity_ids = optional(set(string))<br>  })</pre> | <pre>{<br>  "identity_ids": [],<br>  "type": "SystemAssigned"<br>}</pre> | no |
-| <a name="input_interfaces"></a> [interfaces](#input\_interfaces) | List of the network interface specifications.<br><br>NOTICE. The ORDER in which you specify the interfaces DOES MATTER.<br>Interfaces will be attached to VM in the order you define here, therefore:<br>* The first should be the management interface, which does not participate in data filtering.<br>* The remaining ones are the dataplane interfaces.<br><br>Options for an interface object:<br>- `name`                     - (required\|string) Interface name.<br>- `subnet_id`                - (required\|string) Identifier of an existing subnet to create interface in.<br>- `create_public_ip`         - (optional\|bool) If true, create a public IP for the interface and ignore the `public_ip_address_id`. Default is false.<br>- `private_ip_address`       - (optional\|string) Static private IP to asssign to the interface. If null, dynamic one is allocated.<br>- `public_ip_name`           - (optional\|string) Name of an existing public IP to associate to the interface, used only when `create_public_ip` is `false`.<br>- `public_ip_resource_group` - (optional\|string) Name of a Resource Group that contains public IP resource to associate to the interface. When not specified defaults to `var.resource_group_name`. Used only when `create_public_ip` is `false`.<br>- `availability_zone`        - (optional\|string) Availability zone to create public IP in. If not specified, set based on `avzone` and `enable_zones`.<br>- `enable_ip_forwarding`     - (optional\|bool) If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.<br>- `tags`                     - (optional\|map) Tags to assign to the interface and public IP (if created). Overrides contents of `tags` variable.<br><br>Example:<pre>[<br>  {<br>    name                 = "fw-mgmt"<br>    subnet_id            = azurerm_subnet.my_mgmt_subnet.id<br>    public_ip_address_id = azurerm_public_ip.my_mgmt_ip.id<br>    create_public_ip     = true<br>  },<br>  {<br>    name                = "fw-public"<br>    subnet_id           = azurerm_subnet.my_pub_subnet.id<br>    create_public_ip    = false<br>    public_ip_name      = "fw-public-ip"<br>  },<br>]</pre> | `list(any)` | n/a | yes |
+| <a name="input_interfaces"></a> [interfaces](#input\_interfaces) | List of the network interface specifications.<br><br>NOTICE. The ORDER in which you specify the interfaces DOES MATTER.<br>Interfaces will be attached to VM in the order you define here, therefore:<br>* The first should be the management interface, which does not participate in data filtering.<br>* The remaining ones are the dataplane interfaces.<br><br>Options for an interface object:<br>- `name`                     - (required\|string) Interface name.<br>- `subnet_id`                - (required\|string) Identifier of an existing subnet to create interface in.<br>- `create_public_ip`         - (optional\|bool) If true, create a public IP for the interface and ignore the `public_ip_address_id`. Default is false.<br>- `private_ip_address`       - (optional\|string) Static private IP to asssign to the interface. If null, dynamic one is allocated.<br>- `public_ip_name`           - (optional\|string) Name of an existing public IP to associate to the interface, used only when `create_public_ip` is `false`.<br>- `public_ip_resource_group` - (optional\|string) Name of a Resource Group that contains public IP resource to associate to the interface. When not specified defaults to `var.resource_group_name`. Used only when `create_public_ip` is `false`.<br>- `availability_zone`        - (optional\|string) Availability zone to create public IP in. If not specified, set based on `avzone` and `enable_zones`.<br>- `enable_ip_forwarding`     - (optional\|bool) If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.<br>- `tags`                     - (optional\|map) Tags to assign to the interface and public IP (if created). Overrides contents of `tags` variable.<br><br>Example:<pre>[<br>  {<br>    name                 = "mgmt"<br>    subnet_id            = azurerm_subnet.my_mgmt_subnet.id<br>    public_ip_address_id = azurerm_public_ip.my_mgmt_ip.id<br>    create_public_ip     = true<br>  },<br>  {<br>    name                = "public"<br>    subnet_id           = azurerm_subnet.my_pub_subnet.id<br>    create_public_ip    = false<br>    public_ip_name      = "fw-public-ip"<br>  },<br>]</pre> | `list(any)` | n/a | yes |
 | <a name="input_license_type"></a> [license\_type](#input\_license\_type) | (Optional) For Linux virtual machine specifies the BYOL Type for this Virtual Machine, possible values are `RHEL_BYOS` and `SLES_BYOS`. For Windows virtual machine specifies the type of on-premise license (also known as [Azure Hybrid Use Benefit](https://docs.microsoft.com/windows-server/get-started/azure-hybrid-benefit)) which should be used for this Virtual Machine, possible values are `None`, `Windows_Client` and `Windows_Server`. | `string` | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | The Azure location where the Virtual Machine should exist. Changing this forces a new resource to be created. | `string` | `"eastus"` | no |
 | <a name="input_max_bid_price"></a> [max\_bid\_price](#input\_max\_bid\_price) | (Optional) The maximum price you're willing to pay for this Virtual Machine, in US Dollars; which must be greater than the current spot price. If this bid price falls below the current spot price the Virtual Machine will be evicted using the `eviction_policy`. Defaults to `-1`, which means that the Virtual Machine should not be evicted for price reasons. This can only be configured when `priority` is set to `Spot`. | `number` | `-1` | no |

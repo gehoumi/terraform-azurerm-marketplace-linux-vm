@@ -49,40 +49,32 @@ resource "azurerm_marketplace_agreement" "default" {
 
 resource "azurerm_linux_virtual_machine" "vm_linux" {
 
-  admin_username             = var.admin_username
-  location                   = var.location
-  name                       = var.name
-  network_interface_ids      = [for v in var.interfaces : azurerm_network_interface.this[v.name].id]
-  resource_group_name        = var.resource_group_name
-  size                       = var.size
-  admin_password             = var.admin_password
-  allow_extension_operations = var.allow_extension_operations
-  availability_set_id        = var.availability_set_id
-  #capacity_reservation_group_id   = var.capacity_reservation_group_id
-  computer_name = coalesce(var.computer_name, var.name)
-  custom_data   = var.custom_data
-  #dedicated_host_group_id         = var.dedicated_host_group_id
-  #dedicated_host_id               = var.dedicated_host_id
+  admin_username                  = var.admin_username
+  location                        = var.location
+  name                            = var.name
+  network_interface_ids           = [for v in var.interfaces : azurerm_network_interface.this[v.name].id]
+  resource_group_name             = var.resource_group_name
+  size                            = var.size
+  admin_password                  = var.admin_password
+  allow_extension_operations      = var.allow_extension_operations
+  availability_set_id             = var.availability_set_id
+  computer_name                   = coalesce(var.computer_name, var.name)
+  custom_data                     = var.custom_data
   disable_password_authentication = var.disable_password_authentication
-  #edge_zone                       = var.edge_zone
-  encryption_at_host_enabled = var.encryption_at_host_enabled
-  #eviction_policy                 = var.eviction_policy
-  extensions_time_budget = var.extensions_time_budget
-  license_type           = var.license_type
-  max_bid_price          = var.max_bid_price
-  patch_assessment_mode  = var.patch_assessment_mode
-  patch_mode             = var.patch_mode
-  #platform_fault_domain  = var.platform_fault_domain
-  priority           = var.priority
-  provision_vm_agent = var.provision_vm_agent
-  #proximity_placement_group_id = var.proximity_placement_group_id
-  secure_boot_enabled = var.secure_boot_enabled
-  #source_image_id              = var.source_image_id
-  tags                         = var.tags
-  user_data                    = var.user_data
-  virtual_machine_scale_set_id = var.virtual_machine_scale_set_id
-  vtpm_enabled                 = var.vtpm_enabled
-  zone                         = var.avzone
+  encryption_at_host_enabled      = var.encryption_at_host_enabled
+  extensions_time_budget          = var.extensions_time_budget
+  license_type                    = var.license_type
+  max_bid_price                   = var.max_bid_price
+  patch_assessment_mode           = var.patch_assessment_mode
+  patch_mode                      = var.patch_mode
+  priority                        = var.priority
+  provision_vm_agent              = var.provision_vm_agent
+  secure_boot_enabled             = var.secure_boot_enabled
+  tags                            = var.tags
+  user_data                       = var.user_data
+  virtual_machine_scale_set_id    = var.virtual_machine_scale_set_id
+  vtpm_enabled                    = var.vtpm_enabled
+  zone                            = var.avzone
 
   os_disk {
     caching                          = var.os_disk.caching
