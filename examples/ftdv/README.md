@@ -60,27 +60,27 @@ module "ftdv" {
 
       Apply complete! Resources: 19 added, 0 changed, 0 destroyed.
 
-    Outputs:
-
-    password = <sensitive>
-    private_ip_addresses = {
-      "if-nic0" = "10.100.0.4"
-      "if-nic1" = "10.100.1.4"
-      "if-nic2" = "10.100.2.4"
-      "if-nic3" = "10.100.3.4"
-    }
-    public_ip_addresses = {
-      "if-nic0" = "20.25.23.54"
-      "if-nic1" = "null"
-      "if-nic2" = "null"
-      "if-nic3" = "null"
-    }
-    subnet_cidrs = {
-      "if-nic0" = "10.100.0.0/24"
-      "if-nic1" = "10.100.1.0/24"
-      "if-nic2" = "10.100.2.0/24"
-      "if-nic3" = "10.100.3.0/24"
-    }
+      Outputs:
+  
+      password = <sensitive>
+      private_ip_addresses = {
+        "if-nic0" = "10.100.0.4"
+        "if-nic1" = "10.100.1.4"
+        "if-nic2" = "10.100.2.4"
+        "if-nic3" = "10.100.3.4"
+      }
+      public_ip_addresses = {
+        "if-nic0" = "20.25.23.54"
+        "if-nic1" = "null"
+        "if-nic2" = "null"
+        "if-nic3" = "null"
+      }
+      subnet_cidrs = {
+        "if-nic0" = "10.100.0.0/24"
+        "if-nic1" = "10.100.1.0/24"
+        "if-nic2" = "10.100.2.0/24"
+        "if-nic3" = "10.100.3.0/24"
+      }
 
 * at this stage you have to wait couple of minutes for ftdv to bootstrap.
 
