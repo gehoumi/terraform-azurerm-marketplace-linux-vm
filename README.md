@@ -4,7 +4,7 @@ This terraform module deploy in Azure a Linux-based image Virtual Appliance from
 
 For example, the Virtuals appliances like Cisco FTDv, ASAv, aci-cloud-apic-virtual, nsx-policy-manager,vmseries, ... etc can be deployed in Azure automatically after accepting the appliance image “terms of service”.
 
-Note: The module is not intended for use with Scale Sets or HA.
+Note: The module deploy by default the virtual appliance with four interfaces on four networks. The deployment with Scale Sets or HA is not tested.
 
 ##  How to find an image in Marketplace
 

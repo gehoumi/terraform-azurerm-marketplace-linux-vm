@@ -1,13 +1,13 @@
-module "asav" {
+module "csr-1000v" {
   source = "gehoumi/marketplace-linux-vm/azurerm"
 
-  name                         = "ASAv"
+  name                         = "CSR-1000v"
   accept_marketplace_agreement = true
   source_image_reference = {
-    offer     = "cisco-asav"
+    offer     = "cisco-csr-1000v"
     publisher = "cisco"
-    sku       = "asav-azure-byol"
-    version   = "920.1.14"
+    sku       = "16_9-byol"
+    version   = "16.9.220181121"
   }
   custom_data = base64encode(file("${path.module}/default_initial_config.tpl"))
 }
