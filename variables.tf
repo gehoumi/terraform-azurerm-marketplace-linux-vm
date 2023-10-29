@@ -6,14 +6,32 @@ variable "location" {
 
 variable "resource_group_name" {
   type        = string
-  description = "(Required) The name of the Resource Group in which the Virtual Machine should be exist. Changing this forces a new resource to be created."
-  nullable    = false
+  description = "The name of the Resource Group in which the Virtual Machine should be exist. Changing this forces a new resource to be created."
+  default     = null
 }
 
 variable "name" {
   type        = string
   description = "(Required) The name of Virtual Appliance. Changing this forces a new resource to be created."
   nullable    = false
+}
+
+variable "name_prefix" {
+  description = "A prefix added to all resource names"
+  default     = ""
+  type        = string
+}
+
+variable "create_virtual_network" {
+  description = "If true, create the Virtual Network, otherwise just use a pre-existing network."
+  default     = true
+  type        = bool
+}
+
+variable "create_subnets" {
+  description = "If true, create the Subnets inside the Virtual Network, otherwise use a pre-existing subnets."
+  default     = true
+  type        = bool
 }
 
 variable "admin_password" {
@@ -71,49 +89,6 @@ variable "availability_set_id" {
   description = "The identifier of the Availability Set to use. When using this variable, set `avzone = null`."
   default     = null
   type        = string
-}
-
-variable "interfaces" {
-  description = <<-EOF
-  List of the network interface specifications.
-
-  NOTICE. The ORDER in which you specify the interfaces DOES MATTER.
-  Interfaces will be attached to VM in the order you define here, therefore:
-  * The first should be the management interface, which does not participate in data filtering.
-  * The remaining ones are the dataplane interfaces.
-  
-  Options for an interface object:
-  - `name`                     - (required|string) Interface name.
-  - `subnet_id`                - (required|string) Identifier of an existing subnet to create interface in.
-  - `create_public_ip`         - (optional|bool) If true, create a public IP for the interface and ignore the `public_ip_address_id`. Default is false.
-  - `private_ip_address`       - (optional|string) Static private IP to asssign to the interface. If null, dynamic one is allocated.
-  - `public_ip_name`           - (optional|string) Name of an existing public IP to associate to the interface, used only when `create_public_ip` is `false`.
-  - `public_ip_resource_group` - (optional|string) Name of a Resource Group that contains public IP resource to associate to the interface. When not specified defaults to `var.resource_group_name`. Used only when `create_public_ip` is `false`.
-  - `availability_zone`        - (optional|string) Availability zone to create public IP in. If not specified, set based on `avzone` and `enable_zones`.
-  - `enable_ip_forwarding`     - (optional|bool) If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.
-  - `tags`                     - (optional|map) Tags to assign to the interface and public IP (if created). Overrides contents of `tags` variable.
-
-  Example:
-
-  ```
-  [
-    {
-      name                 = "mgmt"
-      subnet_id            = azurerm_subnet.my_mgmt_subnet.id
-      public_ip_address_id = azurerm_public_ip.my_mgmt_ip.id
-      create_public_ip     = true
-    },
-    {
-      name                = "public"
-      subnet_id           = azurerm_subnet.my_pub_subnet.id
-      create_public_ip    = false
-      public_ip_name      = "fw-public-ip"
-    },
-  ]
-  ```
-
-  EOF
-  type        = list(any)
 }
 
 variable "secure_boot_enabled" {
@@ -189,8 +164,8 @@ variable "identity" {
   }
   description = <<-EOT
   object({
-    type         = "(Required) Specifies the type of Managed Service Identity that should be configured on this Linux Virtual Machine. Possible values are `SystemAssigned`, `UserAssigned`, `SystemAssigned, UserAssigned` (to enable both)."
-    identity_ids = "(Optional) Specifies a list of User Assigned Managed Identity IDs to be assigned to this Linux Virtual Machine. This is required when `type` is set to `UserAssigned` or `SystemAssigned, UserAssigned`."
+    type         = "Specifies the type of Managed Service Identity that should be configured on this Linux Virtual Machine. Possible values are `SystemAssigned`, `UserAssigned`, `SystemAssigned, UserAssigned` (to enable both)."
+    identity_ids = "Specifies a list of User Assigned Managed Identity IDs to be assigned to this Linux Virtual Machine. This is required when `type` is set to `UserAssigned` or `SystemAssigned, UserAssigned`."
   })
   EOT
 }
@@ -362,3 +337,186 @@ variable "os_disk" {
   EOT
   nullable    = false
 }
+
+variable "additional_network_security_groups" {
+  description = <<-EOF
+  Map of Network Security Groups to create.
+  List of available attributes of each Network Security Group entry:
+  - `name` : Name of the Network Security Group.
+  - `location` : (Optional) Specifies the Azure location where to deploy the resource.
+  - `rules`: (Optional) A list of objects representing a Network Security Rule. The key of each entry acts as the name of the rule and
+      needs to be unique across all rules in the Network Security Group.
+      List of attributes available to define a Network Security Rule.
+      Notice, all port values are integers between `0` and `65535`. Port ranges can be specified as `minimum-maximum` port value, example: `21-23`:
+      - `priority` : Numeric priority of the rule. The value can be between 100 and 4096 and must be unique for each rule in the collection.
+      The lower the priority number, the higher the priority of the rule.
+      - `direction` : The direction specifies if rule will be evaluated on incoming or outgoing traffic. Possible values are `Inbound` and `Outbound`.
+      - `access` : Specifies whether network traffic is allowed or denied. Possible values are `Allow` and `Deny`.
+      - `protocol` : Network protocol this rule applies to. Possible values include `Tcp`, `Udp`, `Icmp`, or `*` (which matches all). For supported values refer to the [provider documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#protocol)
+      - `source_port_range` : A source port or a range of ports. This can also be an `*` to match all.
+      - `source_port_ranges` : A list of source ports or ranges of ports. This can be specified only if `source_port_range` was not used.
+      - `destination_port_range` : A destination port or a range of ports. This can also be an `*` to match all.
+      - `destination_port_ranges` : A list of destination ports or a ranges of ports. This can be specified only if `destination_port_range` was not used.
+      - `source_address_prefix` : Source CIDR or IP range or `*` to match any IP. This can also be a tag. To see all available tags for a region use the following command (example for US West Central): `az network list-service-tags --location westcentralus`.
+      - `source_address_prefixes` : A list of source address prefixes. Tags are not allowed. Can be specified only if `source_address_prefix` was not used.
+      - `destination_address_prefix` : Destination CIDR or IP range or `*` to match any IP. Tags are allowed, see `source_address_prefix` for details.
+      - `destination_address_prefixes` : A list of destination address prefixes. Tags are not allowed. Can be specified only if `destination_address_prefix` was not used.
+
+  ```
+  EOF
+  default     = null
+}
+
+variable "management_network_security_groups" {
+  description = <<-EOF
+  The default management network security group attached to the first interface.
+  The default management network security group is merged with any additional network security groups provided in 'var.additional_network_security_groups'
+  to construst 'local.network_security_groups'.
+  EOF
+  default     = null
+}
+locals {
+  management_network_security_groups = var.management_network_security_groups != null ? var.management_network_security_groups : {
+    "management-security-group" = {
+      name     = "management_network_security_group"
+      location = "East US"
+      rules = {
+        "management-rules" = {
+          access                     = "Allow"
+          direction                  = "Inbound"
+          priority                   = 100
+          protocol                   = "Tcp"
+          source_port_range          = "*"
+          source_address_prefixes    = concat(try(var.allow_inbound_mgmt_ips, []), try([data.http.this.response_body], []))
+          destination_address_prefix = "*"
+          destination_port_ranges    = ["22", "443"]
+        }
+      }
+    }
+  }
+  network_security_groups = merge(local.management_network_security_groups, var.additional_network_security_groups)
+}
+
+variable "allow_inbound_mgmt_ips" {
+  description = <<-EOF
+    List of IP CIDR ranges that are allowed to access management interface.
+  EOF
+  type        = list(string)
+  default     = []
+}
+
+variable "address_space" {
+  description = "The address space used by the virtual network. You can supply more than one address space."
+  type        = list(string)
+  default     = ["10.100.0.0/16"]
+}
+
+variable "route_tables" {
+  description = <<-EOF
+  Map of objects describing a Route Table.
+  List of available attributes of each Route Table entry:
+  - `name`: Name of a Route Table.
+  - `location` : (Optional) Specifies the Azure location where to deploy the resource.
+  - `routes` : (Optional) Map of routes within the Route Table.
+    List of available attributes of each route entry:
+    - `address_prefix` : The destination CIDR to which the route applies, such as `10.1.0.0/16`.
+    - `next_hop_type` : The type of Azure hop the packet should be sent to.
+      Possible values are: `VirtualNetworkGateway`, `VnetLocal`, `Internet`, `VirtualAppliance` and `None`.
+    - `next_hop_in_ip_address` : Contains the IP address packets should be forwarded to. 
+      Next hop values are only allowed in routes where the next hop type is `VirtualAppliance`.
+
+  Example:
+  ```
+  {
+    "rt_1" = {
+      name = "route_table_1"
+      routes = {
+        "route_1" = {
+          address_prefix = "10.1.0.0/16"
+          next_hop_type  = "vnetlocal"
+        },
+        "route_2" = {
+          address_prefix = "10.2.0.0/16"
+          next_hop_type  = "vnetlocal"
+        },
+      }
+    },
+    "rt_2" = {
+      name = "route_table_2"
+      routes = {
+        "route_3" = {
+          address_prefix         = "0.0.0.0/0"
+          next_hop_type          = "VirtualAppliance"
+          next_hop_in_ip_address = "10.112.0.100"
+        }
+      },
+    },
+  }
+  ```
+  EOF
+  default     = {}
+}
+
+variable "network_interfaces" {
+  type = map(object({
+    name                            = string
+    address_prefixes                = list(string)
+    network_security_group          = optional(string, "management-security-group")
+    route_table_id                  = optional(string)
+    enable_storage_service_endpoint = optional(bool, false)
+    create_public_ip                = optional(bool, false)
+    private_ip_address              = optional(string)
+    public_ip_name                  = optional(string)
+    public_ip_resource_group        = optional(string)
+    availability_zone               = optional(string)
+    enable_ip_forwarding            = optional(string)
+    tags                            = optional(map(string))
+  }))
+
+  default = {
+    "if-nic0" = {
+      name                            = "management-subnet-0"
+      address_prefixes                = ["10.100.0.0/24"]
+      network_security_group          = "management-security-group"
+      enable_storage_service_endpoint = true
+      create_public_ip                = true
+    },
+    "if-nic1" = {
+      name             = "private-subnet-1"
+      address_prefixes = ["10.100.1.0/24"]
+    },
+    "if-nic2" = {
+      name             = "private-subnet-2"
+      address_prefixes = ["10.100.2.0/24"]
+    },
+    "if-nic3" = {
+      name             = "private-subnet-3"
+      address_prefixes = ["10.100.3.0/24"]
+    },
+  }
+  description = <<-EOF
+  List of the network interface specifications.
+
+  NOTICE. The ORDER in which you specify the interfaces DOES MATTER.
+  Interfaces will be attached to VM in the order you define here, therefore:
+  * The first should be the management interface, which does not participate in data filtering.
+  * The name must be 'management-security-group' for the first interface.
+  * The remaining ones are the dataplane interfaces.
+  
+  Options for an interface object:
+  - `name`                            - Interface name
+  - `address_prefixes`                - The address prefix to use for the subnet. Only required when a subnet will be created.
+  - `network_security_group`          - The Network Security Group identifier to associate with the subnet. The name must be 'management-security-group' for the first interface.
+  - `route_table_id`                  - The Route Table identifier to associate with the subnet.
+  - `enable_storage_service_endpoint` - Flag that enables `Microsoft.Storage` service endpoint on a subnet. This is a suggested setting for the management interface when full bootstrapping using an Azure Storage Account is used. Defaults to `false`.
+  - `create_public_ip`                - If true, create a public IP for the interface and ignore the `public_ip_address_id`. Default is false.
+  - `private_ip_address`              - Static private IP to asssign to the interface. If null, dynamic one is allocated.
+  - `public_ip_name`                  - Name of an existing public IP to associate to the interface, used only when `create_public_ip` is `false`.
+  - `public_ip_resource_group`        - Name of a Resource Group that contains public IP resource to associate to the interface. When not specified defaults to `var.resource_group_name`. Used only when `create_public_ip` is `false`.
+  - `availability_zone`               - Availability zone to create public IP in. If not specified, set based on `avzone` and `enable_zones`.
+  - `enable_ip_forwarding`            - If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.
+  - `tags`                            - Tags to assign to the interface and public IP (if created). Overrides contents of `tags` variable.
+
+  EOF
+}
+

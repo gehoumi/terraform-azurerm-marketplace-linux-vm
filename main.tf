@@ -1,8 +1,40 @@
+# This is only to easily fetch the public IP of your
+# local of code deployment machine to configure firewall rule
+# for management access.
+#
+data "http" "this" {
+  url = "https://ifconfig.me/ip"
+}
+
+# Generate a random password 
+resource "random_password" "this" {
+  count            = var.admin_password == null ? 1 : 0
+  length           = 16
+  min_lower        = 16 - 4
+  min_numeric      = 1
+  min_special      = 1
+  min_upper        = 1
+  special          = true
+  override_special = "_%@"
+}
+
+# Resource group to hold all the resources.
+resource "azurerm_resource_group" "this" {
+  count    = var.resource_group_name == null ? 1 : 0
+  name     = "${var.name}-group-name"
+  location = var.location
+}
+
+locals {
+  password            = coalesce(var.admin_password, try(random_password.this[0].result, null))
+  resource_group_name = coalesce(var.resource_group_name, try(azurerm_resource_group.this[0], null))
+}
+
 resource "azurerm_public_ip" "this" {
-  for_each = { for v in var.interfaces : v.name => v if try(v.create_public_ip, false) }
+  for_each = { for k, v in var.network_interfaces : k => v if try(v.create_public_ip, false) }
 
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = local.resource_group_name
   name                = "${each.value.name}-pip"
   allocation_method   = "Static"
   sku                 = "Standard"
@@ -11,30 +43,31 @@ resource "azurerm_public_ip" "this" {
 }
 
 data "azurerm_public_ip" "this" {
-  for_each = { for v in var.interfaces : v.name => v
+  for_each = { for k, v in var.network_interfaces : k => v
     if(!try(v.create_public_ip, false) && try(v.public_ip_name, null) != null)
   }
 
   name                = each.value.public_ip_name
-  resource_group_name = try(each.value.public_ip_resource_group, null) != null ? each.value.public_ip_resource_group : var.resource_group_name
+  resource_group_name = try(each.value.public_ip_resource_group, null) != null ? each.value.public_ip_resource_group : local.resource_group_name
 }
 
+
 resource "azurerm_network_interface" "this" {
-  for_each = { for k, v in var.interfaces : v.name => merge(v, { index = k }) }
+  for_each = { for k, v in var.network_interfaces : k => v if can(v.name) }
 
   name                          = "${each.value.name}-nic"
   location                      = var.location
-  resource_group_name           = var.resource_group_name
-  enable_accelerated_networking = each.value.index == 0 ? false : var.accelerated_networking
-  enable_ip_forwarding          = try(each.value.enable_ip_forwarding, each.value.index == 0 ? false : true)
+  resource_group_name           = local.resource_group_name
+  enable_accelerated_networking = each.key == keys(var.network_interfaces)[0] ? false : var.accelerated_networking
+  enable_ip_forwarding          = try(each.value.enable_ip_forwarding, each.key == keys(var.network_interfaces)[0] ? false : true)
   tags                          = try(each.value.tags, var.tags)
 
   ip_configuration {
     name                          = "primary"
-    subnet_id                     = each.value.subnet_id
+    subnet_id                     = local.subnets[each.key].id
     private_ip_address_allocation = try(each.value.private_ip_address, null) != null ? "Static" : "Dynamic"
     private_ip_address            = try(each.value.private_ip_address, null)
-    public_ip_address_id          = try(azurerm_public_ip.this[each.value.name].id, data.azurerm_public_ip.this[each.value.name].id, null)
+    public_ip_address_id          = try(azurerm_public_ip.this[each.key].id, data.azurerm_public_ip.this[each.key].id, null)
   }
 }
 
@@ -52,10 +85,10 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
   admin_username                  = var.admin_username
   location                        = var.location
   name                            = var.name
-  network_interface_ids           = [for v in var.interfaces : azurerm_network_interface.this[v.name].id]
-  resource_group_name             = var.resource_group_name
+  network_interface_ids           = [for k, v in var.network_interfaces : azurerm_network_interface.this[k].id]
+  resource_group_name             = local.resource_group_name
   size                            = var.size
-  admin_password                  = var.admin_password
+  admin_password                  = local.password
   allow_extension_operations      = var.allow_extension_operations
   availability_set_id             = var.availability_set_id
   computer_name                   = coalesce(var.computer_name, var.name)
@@ -136,9 +169,7 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
     }
   }
 
-
   lifecycle {
-
     # Public keys can only be added to authorized_keys file for 'admin_username' due to a known issue in Linux provisioning agent.
     precondition {
       condition     = alltrue([for value in var.admin_ssh_keys : value.username == var.admin_username || value.username == null])
