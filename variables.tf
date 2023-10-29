@@ -37,7 +37,7 @@ variable "create_subnets" {
 variable "admin_password" {
   type        = string
   default     = null
-  description = "(Optional) The Password which should be used for the local-administrator on this Virtual Machine Required when using Windows Virtual Machine. Changing this forces a new resource to be created. When an `admin_password` is specified `disable_password_authentication` must be set to `false`. One of either `admin_password` or `admin_ssh_key` must be specified."
+  description = "The Password which should be used for the local-administrator on this Virtual Machine. Changing this forces a new resource to be created. When an `admin_password` is specified `disable_password_authentication` must be set to `false`. One of either `admin_password` or `admin_ssh_key` must be specified."
   sensitive   = true
 }
 
@@ -58,7 +58,7 @@ variable "admin_ssh_keys" {
 variable "admin_username" {
   type        = string
   default     = "azureuser"
-  description = "(Optional) The admin username of the VM that will be deployed."
+  description = "The admin username of the VM that will be deployed."
   nullable    = false
 }
 

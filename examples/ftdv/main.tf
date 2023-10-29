@@ -1,8 +1,8 @@
 module "ftdv" {
-  source = "../.."
+  source  = "gehoumi/marketplace-linux-vm/azurerm"
+  version = "1.0.0"
 
   name                         = "FTDv"
-  resource_group_name          = "cloudops"
   accept_marketplace_agreement = true
   source_image_reference = {
     offer     = "cisco-ftdv"

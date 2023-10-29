@@ -1,8 +1,3 @@
-#output "interfaces" {
-#  description = "Map of network interfaces. Keys are equal to var.interfaces `name` properties."
-#  value       = azurerm_network_interface.this
-#}
-
 output "public_ip_addresses" {
   description = "The map of management IP addresses and interfaces. If `create_public_ip` was `true`, it is a public IP address, otherwise is 'null'."
   value = {
@@ -24,6 +19,12 @@ output "private_ip_addresses" {
 output "password" {
   description = "Initial administrative password."
   value       = local.password
+  sensitive   = true
+}
+
+output "username" {
+  description = "The username of the administrator configured in the Virtual Machine"
+  value       = var.admin_username
   sensitive   = true
 }
 

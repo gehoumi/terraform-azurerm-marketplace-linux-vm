@@ -26,10 +26,9 @@ Threat defense virtual deploys with 4 vNICs by default.
 
 ```bash
 module "ftdv" {
-  source = "../.."
+  source = "gehoumi/marketplace-linux-vm/azurerm"
 
   name                         = "FTDv"
-  resource_group_name          = "cloudops"
   accept_marketplace_agreement = true
   source_image_reference = {
     offer     = "cisco-ftdv"
@@ -58,6 +57,8 @@ module "ftdv" {
 
   The deployment takes couple of minutes. At the end you should see a summary similar to this:
 
+```bash
+
       Apply complete! Resources: 19 added, 0 changed, 0 destroyed.
 
       Outputs:
@@ -81,6 +82,7 @@ module "ftdv" {
         "if-nic2" = "10.100.2.0/24"
         "if-nic3" = "10.100.3.0/24"
       }
+```
 
 * at this stage you have to wait couple of minutes for ftdv to bootstrap.
 
@@ -181,7 +183,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | ../.. | n/a |
+| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | gehoumi/marketplace-linux-vm/azurerm | 1.0.0 |
 
 ## Resources
 

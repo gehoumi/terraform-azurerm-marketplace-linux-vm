@@ -18,16 +18,21 @@ resource "random_password" "this" {
   override_special = "_%@"
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+}
+
 # Resource group to hold all the resources.
 resource "azurerm_resource_group" "this" {
   count    = var.resource_group_name == null ? 1 : 0
-  name     = "${var.name}-group-name"
+  name     = "${var.name}-${random_string.suffix.result}"
   location = var.location
 }
 
 locals {
   password            = coalesce(var.admin_password, try(random_password.this[0].result, null))
-  resource_group_name = coalesce(var.resource_group_name, try(azurerm_resource_group.this[0], null))
+  resource_group_name = coalesce(var.resource_group_name, try(azurerm_resource_group.this[0].name, null))
 }
 
 resource "azurerm_public_ip" "this" {
