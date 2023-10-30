@@ -1,6 +1,6 @@
 # Deploy Virtual Appliance from Azure Marketplace using Terraform module
 
-This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual, nsx-policy-manager, vmseries, and more, subject to the acceptance of the appliance image's "terms of service."
+This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual and more, subject to the acceptance of the appliance image's "terms of service."
 
 By default, the module deploys the virtual appliance with four network interfaces on four distinct networks. However,the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, routes, NSG and other settings to align with your desired deployment scenarios.
 
