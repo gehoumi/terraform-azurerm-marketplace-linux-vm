@@ -1,7 +1,7 @@
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/gehoumi/terraform-azurerm-marketplace-linux-vm)
 [![Run in Cisco Cloud IDE](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-runable-icon.svg)](https://developer.cisco.com/codeexchange/devenv/gehoumi/terraform-azurerm-marketplace-linux-vm/)
 [![Github tag](https://img.shields.io/github/tag/gehoumi/terraform-azurerm-marketplace-linux-vm.svg)](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/releases)
-[![My Public profile](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/gehoumi)
+[![My Public profile](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gehoumi)
 # Deploy Virtual Appliance from Azure Marketplace using Terraform module
 
 This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual and more, subject to the acceptance of the appliance image's "terms of service."
