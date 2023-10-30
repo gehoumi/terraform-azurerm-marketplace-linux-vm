@@ -1,8 +1,8 @@
 # Deploy Virtual Appliance from Azure Marketplace using Terraform module
 
-This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from the Azure [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual, nsx-policy-manager, vmseries, and more, subject to the acceptance of the appliance image's "terms of service."
+This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual, nsx-policy-manager, vmseries, and more, subject to the acceptance of the appliance image's "terms of service."
 
-By default, the module deploys the virtual appliance with four network interfaces on four distinct networks. However,the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, network configurations, and other settings to align with your desired deployment scenarios. This allows you to tailor the deployment to your unique needs and preferences.
+By default, the module deploys the virtual appliance with four network interfaces on four distinct networks. However,the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, routes, NSG and other settings to align with your desired deployment scenarios.
 
 Functional examples are included in the [examples](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples) directory, check it for further information. 
 
@@ -29,7 +29,7 @@ Once you have the detail you can now use these elements to build out the `storag
 ```bash
 
 module "ftdv" {
-  source = "../.."
+  source = "gehoumi/marketplace-linux-vm/azurerm"
 
   name                         = "FTDv"
   accept_marketplace_agreement = true
