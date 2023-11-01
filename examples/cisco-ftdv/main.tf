@@ -1,6 +1,6 @@
 module "ftdv" {
   source  = "gehoumi/marketplace-linux-vm/azurerm"
-  version = "1.0.0"
+  version = "1.0.2"
 
   name                         = "FTDv"
   accept_marketplace_agreement = true

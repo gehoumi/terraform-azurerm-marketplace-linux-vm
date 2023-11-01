@@ -1,5 +1,6 @@
 module "csr-1000v" {
-  source = "gehoumi/marketplace-linux-vm/azurerm"
+  source  = "gehoumi/marketplace-linux-vm/azurerm"
+  version = "1.0.2"
 
   name                         = "CSR-1000v"
   accept_marketplace_agreement = true

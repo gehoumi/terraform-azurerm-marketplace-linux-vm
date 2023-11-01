@@ -230,7 +230,7 @@ variable "encryption_at_host_enabled" {
 variable "disable_password_authentication" {
   type        = bool
   default     = false
-  description = "(Optional) Should Password Authentication be disabled on this Virtual Machine? Defaults to `true`. Changing this forces a new resource to be created."
+  description = "Should Password Authentication be disabled on this Virtual Machine. Changing this forces a new resource to be created."
 }
 
 variable "extensions_time_budget" {
@@ -241,8 +241,8 @@ variable "extensions_time_budget" {
 
 variable "allow_extension_operations" {
   type        = bool
-  default     = true
-  description = "(Optional) Should Extension Operations be allowed on this Virtual Machine? Defaults to `true`."
+  default     = false
+  description = "Should Extension Operations be allowed on this Virtual Machine"
 }
 
 variable "license_type" {

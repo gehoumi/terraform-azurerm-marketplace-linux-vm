@@ -123,7 +123,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_asav"></a> [asav](#module\_asav) | gehoumi/marketplace-linux-vm/azurerm | 1.0.1 |
+| <a name="module_asav"></a> [asav](#module\_asav) | gehoumi/marketplace-linux-vm/azurerm | 1.0.2 |
 
 ## Resources
 

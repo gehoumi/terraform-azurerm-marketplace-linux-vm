@@ -119,7 +119,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_csr-1000v"></a> [csr-1000v](#module\_csr-1000v) | gehoumi/marketplace-linux-vm/azurerm | n/a |
+| <a name="module_csr-1000v"></a> [csr-1000v](#module\_csr-1000v) | gehoumi/marketplace-linux-vm/azurerm | 1.0.2 |
 
 ## Resources
 

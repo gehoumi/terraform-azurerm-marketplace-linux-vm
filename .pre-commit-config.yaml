@@ -1,6 +1,14 @@
 repos:
 - repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.62.3
+  rev: v1.83.5
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
+- hooks:
+  - args:
+    - --skip-check
+    - CKV_TF_1,CKV_AZURE_1,CKV2_AZURE_1,CKV_AZURE_35,CKV2_AZURE_10,CKV2_AZURE_12,CKV_AZURE_49,CKV_AZURE_59,CKV_AZURE_93,CKV_AZURE_97,CKV_AZURE_118,CKV_AZURE_119,CKV_AZURE_120,CKV_AZURE_149,CKV_AZURE_179,CKV_AZURE_190,CKV_AZURE_206,CKV_AZURE_217,CKV_AZURE_218
+    id: checkov
+    verbose: true
+  repo: https://github.com/bridgecrewio/checkov.git
+  rev: 3.0.15
