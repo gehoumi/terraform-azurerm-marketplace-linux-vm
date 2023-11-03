@@ -17,8 +17,8 @@ variable "name" {
 }
 
 variable "name_prefix" {
-  description = "A prefix added to all resource names"
-  default     = ""
+  description = "A prefix added to vnet resource name"
+  default     = "vnet-"
   type        = string
 }
 
@@ -361,6 +361,14 @@ variable "additional_network_security_groups" {
   default     = null
 }
 
+variable "allow_inbound_mgmt_ips" {
+  description = <<-EOF
+    List of IP CIDR ranges that are allowed to access management interface.
+  EOF
+  type        = list(string)
+  default     = []
+}
+
 variable "management_network_security_groups" {
   description = <<-EOF
   The default management network security group attached to the first interface.
@@ -389,66 +397,6 @@ locals {
     }
   }
   network_security_groups = merge(local.management_network_security_groups, var.additional_network_security_groups)
-}
-
-variable "allow_inbound_mgmt_ips" {
-  description = <<-EOF
-    List of IP CIDR ranges that are allowed to access management interface.
-  EOF
-  type        = list(string)
-  default     = []
-}
-
-variable "address_space" {
-  description = "The address space used by the virtual network. You can supply more than one address space."
-  type        = list(string)
-  default     = ["10.100.0.0/16"]
-}
-
-variable "route_tables" {
-  description = <<-EOF
-  Map of objects describing a Route Table.
-  List of available attributes of each Route Table entry:
-  - `name`: Name of a Route Table.
-  - `location` : (Optional) Specifies the Azure location where to deploy the resource.
-  - `routes` : (Optional) Map of routes within the Route Table.
-    List of available attributes of each route entry:
-    - `address_prefix` : The destination CIDR to which the route applies, such as `10.1.0.0/16`.
-    - `next_hop_type` : The type of Azure hop the packet should be sent to.
-      Possible values are: `VirtualNetworkGateway`, `VnetLocal`, `Internet`, `VirtualAppliance` and `None`.
-    - `next_hop_in_ip_address` : Contains the IP address packets should be forwarded to. 
-      Next hop values are only allowed in routes where the next hop type is `VirtualAppliance`.
-
-  Example:
-  ```
-  {
-    "rt_1" = {
-      name = "route_table_1"
-      routes = {
-        "route_1" = {
-          address_prefix = "10.1.0.0/16"
-          next_hop_type  = "vnetlocal"
-        },
-        "route_2" = {
-          address_prefix = "10.2.0.0/16"
-          next_hop_type  = "vnetlocal"
-        },
-      }
-    },
-    "rt_2" = {
-      name = "route_table_2"
-      routes = {
-        "route_3" = {
-          address_prefix         = "0.0.0.0/0"
-          next_hop_type          = "VirtualAppliance"
-          next_hop_in_ip_address = "10.112.0.100"
-        }
-      },
-    },
-  }
-  ```
-  EOF
-  default     = {}
 }
 
 variable "network_interfaces" {
@@ -514,3 +462,54 @@ variable "network_interfaces" {
   EOF
 }
 
+variable "address_space" {
+  description = "The address space used by the virtual network. You can supply more than one address space."
+  type        = list(string)
+  default     = ["10.100.0.0/16"]
+}
+
+variable "route_tables" {
+  description = <<-EOF
+  Map of objects describing a Route Table.
+  List of available attributes of each Route Table entry:
+  - `name`: Name of a Route Table.
+  - `location` : (Optional) Specifies the Azure location where to deploy the resource.
+  - `routes` : (Optional) Map of routes within the Route Table.
+    List of available attributes of each route entry:
+    - `address_prefix` : The destination CIDR to which the route applies, such as `10.1.0.0/16`.
+    - `next_hop_type` : The type of Azure hop the packet should be sent to.
+      Possible values are: `VirtualNetworkGateway`, `VnetLocal`, `Internet`, `VirtualAppliance` and `None`.
+    - `next_hop_in_ip_address` : Contains the IP address packets should be forwarded to. 
+      Next hop values are only allowed in routes where the next hop type is `VirtualAppliance`.
+
+  Example:
+  ```
+  {
+    "rt_1" = {
+      name = "route_table_1"
+      routes = {
+        "route_1" = {
+          address_prefix = "10.1.0.0/16"
+          next_hop_type  = "vnetlocal"
+        },
+        "route_2" = {
+          address_prefix = "10.2.0.0/16"
+          next_hop_type  = "vnetlocal"
+        },
+      }
+    },
+    "rt_2" = {
+      name = "route_table_2"
+      routes = {
+        "route_3" = {
+          address_prefix         = "0.0.0.0/0"
+          next_hop_type          = "VirtualAppliance"
+          next_hop_in_ip_address = "10.112.0.100"
+        }
+      },
+    },
+  }
+  ```
+  EOF
+  default     = {}
+}

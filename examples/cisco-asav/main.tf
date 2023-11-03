@@ -1,6 +1,6 @@
 module "asav" {
   source  = "gehoumi/marketplace-linux-vm/azurerm"
-  version = "1.0.2"
+  version = "1.0.3"
 
   name                         = "ASAv"
   accept_marketplace_agreement = true

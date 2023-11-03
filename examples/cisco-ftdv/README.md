@@ -183,7 +183,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | gehoumi/marketplace-linux-vm/azurerm | 1.0.2 |
+| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | gehoumi/marketplace-linux-vm/azurerm | 1.0.3 |
 
 ## Resources
 
