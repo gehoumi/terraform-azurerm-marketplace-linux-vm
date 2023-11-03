@@ -101,7 +101,6 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
   disable_password_authentication = var.disable_password_authentication
   encryption_at_host_enabled      = var.encryption_at_host_enabled
   extensions_time_budget          = var.extensions_time_budget
-  license_type                    = var.license_type
   max_bid_price                   = var.max_bid_price
   patch_assessment_mode           = var.patch_assessment_mode
   patch_mode                      = var.patch_mode

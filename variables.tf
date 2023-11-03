@@ -245,12 +245,6 @@ variable "allow_extension_operations" {
   description = "Should Extension Operations be allowed on this Virtual Machine"
 }
 
-variable "license_type" {
-  type        = string
-  default     = null
-  description = "(Optional) For Linux virtual machine specifies the BYOL Type for this Virtual Machine, possible values are `RHEL_BYOS` and `SLES_BYOS`. For Windows virtual machine specifies the type of on-premise license (also known as [Azure Hybrid Use Benefit](https://docs.microsoft.com/windows-server/get-started/azure-hybrid-benefit)) which should be used for this Virtual Machine, possible values are `None`, `Windows_Client` and `Windows_Server`."
-}
-
 variable "max_bid_price" {
   type        = number
   default     = -1
