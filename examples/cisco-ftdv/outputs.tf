@@ -9,14 +9,9 @@ output "private_ip_addresses" {
 }
 
 output "password" {
-  description = "Initial administrative password."
+  description = "The admin password."
   value       = module.ftdv.password
   sensitive   = true
-}
-
-output "vnet_cidr" {
-  description = "VNET address space."
-  value       = module.ftdv.vnet_cidr
 }
 
 output "subnet_cidrs" {

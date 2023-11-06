@@ -85,7 +85,7 @@ Complete the Initial Configuration Using the CLI, either from Azure console port
 
       terraform output password:
     
-* Retrieve the deafult username:
+* Retrieve the username:
 
       terraform output username:
 

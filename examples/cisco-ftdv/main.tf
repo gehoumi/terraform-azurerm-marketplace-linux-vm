@@ -11,6 +11,14 @@ module "ftdv" {
     version   = "74.1.132"
   }
   boot_diagnostics = true
+
+  # Initial configuration
+  custom_data = base64encode(jsonencode({
+    "AdminPassword" : module.ftdv.password,
+    "Hostname" : "cisco-ftdv",
+    "ManageLocally" : "Yes"
+  }))
+
 }
 
 

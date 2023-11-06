@@ -17,6 +17,9 @@ az vm image list -o table --publisher infoblox --offer infoblox-vm-appliances-90
 
 This example deploys infoblox-vm-appliances-901 with two interfaces on two networks.
 
+## Parameters for Initial configuration
+Available options from azure [ARM template](https://github.com/infobloxopen/infoblox-azure-templates/blob/master/main/mainTemplate.json#L471)
+
 ## Usage
 
 ```bash
