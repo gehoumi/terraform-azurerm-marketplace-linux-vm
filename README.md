@@ -7,16 +7,19 @@
 
 This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual,Infoblox and more, subject to the acceptance of the appliance image's "terms of service."
 
-By default, the module deploys the virtual appliance with four network interfaces on four distinct subnets. However, the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, routes, NSG and other settings to align with your desired deployment scenarios.
+## Default Deployment
 
-Functional examples are included in the [examples](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples) directory, check it for further information. 
+By default, the module deploys the virtual appliance with four network interfaces on four distinct subnet. However, the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, subnets, routes, network security groups (NSGs) and other settings to align with your desired deployment scenarios.
+
+## Functional Examples
+
+For detailed guidance and real-world use cases, check out the [examples](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples) directory. These examples will help you understand how to configure and deploy different vendor virtual appliances. 
 
 Please be aware that this module has not been tested for deployments involving Scale Sets or high availability configurations.
 
-##  How to find an image in Marketplace
+##  Finding an Image in the Marketplace
 
-You must first obtain the following IDs from : Offer, Publisher, SKU, and Version. 
-This can be done from Azure CLI using the following command with the provider name, example for cisco :
+To deploy a virtual appliance from the Azure Marketplace, you need specific details like Offer, Publisher, SKU, and Version. You can obtain these details by using Azure CLI. For instance, if you're looking for Cisco images, use the following commands :
 
 ```bash
 # Find all cisco images
@@ -52,13 +55,15 @@ module "ftdv" {
 
 ## Accepting Marketplace legal terms
 
-When deploying an image from the Marketplace, this module will create a resource `azurerm_marketplace_agreement` to accept the End User License Agreement (EULA) for the Virtual Appliance image that is being deployed. Once the EULA is accepted one time in an Azure subscription, you should be able to deploy the same appliance again without needing to accept the terms again. But If you already accepted the same legal terms from Azure Portal or from another deployment, you can disable the resource re-creation, by setting :
+When deploying an image from the Marketplace, this module will create a resource `azurerm_marketplace_agreement` to accept the End User License Agreement (EULA) for the Virtual Appliance image that is being deployed. Once the EULA is accepted one time in an Azure subscription, you should be able to deploy the same appliance again without needing to accept the terms again. 
+
+To disable the resource re-creation, set the following option:
 
 ```bash
 accept_marketplace_agreement = false
 ```
-Alternatively, you can revoke the acceptance later when you are done with the vm. 
-Use `az vm image terms cancel` command. 
+
+If you want to revoke the acceptance with Azure CLI, you can use the `az vm image terms cancel` command. 
 Example:
 
 ```bash

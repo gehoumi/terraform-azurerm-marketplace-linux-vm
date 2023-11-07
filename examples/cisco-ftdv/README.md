@@ -144,9 +144,10 @@ Cisco Firepower Threat Defense for Azure v7.4.1 (build 132)
 > 
 ```
 
-* HTTPS Management Access to FTDv using admin credentials
-    https://<management public ip>
-    https://20.25.23.54
+* HTTPS Management Access to FTDv using admin credentials:
+
+      https://<management public ip>
+      https://20.25.23.54
 
 
 
