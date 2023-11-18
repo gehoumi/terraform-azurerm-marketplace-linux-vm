@@ -14,13 +14,13 @@ This can be done from Azure CLI using the following command with the provider na
 
 ```bash
 # Find cisco images
-az vm image list -o table --publisher cisco --offer cisco-c8000v-payg --all
+az vm image list -o table --publisher cisco --offer cisco-c8000v-byol --all
   
 ```
 
 
 ## Bootstrap configuration 
-This example deploys the cisco-c8000v in a new Resource Group using four interfaces, in a newly created VNet with a basic initial config file. 
+This example deploys the cisco-c8000v 4- interfaces with a basic initial config. 
 For further information about providing a initial configuration file for the Cisco Catalyst 8000V instance, see [Deploying a Cisco Catalyst 8000V VM Using a Day 0](https://www.cisco.com/c/en/us/td/docs/routers/C8000V/Configuration/c8000v-installation-configuration-guide/day0-bootstrap-configuration.html#Cisco_Concept.dita_9a071ada-30b7-4014-bbb0-6630e78810a4)
 
 ## Usage
