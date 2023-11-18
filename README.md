@@ -5,7 +5,7 @@
 [![My Public profile](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&style=flat-square)](https://www.linkedin.com/in/gehoumi)
 # Deploy Virtual Appliance from Azure Marketplace using Terraform module
 
-This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco FTDv, ASAv, aci-cloud-apic-virtual,Infoblox and more, subject to the acceptance of the appliance image's "terms of service."
+This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco Catalyst 8000V Edge SD-WAN, FTDv, ASAv, ACI-CLOUD-APIC-Virtual,Infoblox and more, subject to the acceptance of the appliance image's "terms of service."
 
 ## Default Deployment
 
@@ -19,6 +19,7 @@ Please be aware that this module has not been tested for deployments involving S
 
 ##  Finding an Image in the Marketplace
 
+You must have a user account and subscription with Microsoft Azure. 
 To deploy a virtual appliance from the Azure Marketplace, you need specific details like Offer, Publisher, SKU, and Version. You can obtain these details by using Azure CLI. For instance, if you're looking for Cisco images, use the following commands :
 
 ```bash
@@ -27,9 +28,9 @@ az vm image list -o table --publisher cisco --all
 
 # Find cisco ftdv images
 az vm image list -o table --publisher cisco --offer cisco-ftdv --all
-
-  
 ```
+
+The module supports both Bring Your Own License (BYOL) and Pay-As-You-Go (PAYG) licensing model.
 
 ## Usage
 
