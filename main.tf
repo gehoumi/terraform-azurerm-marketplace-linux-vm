@@ -60,12 +60,12 @@ data "azurerm_public_ip" "this" {
 resource "azurerm_network_interface" "this" {
   for_each = { for k, v in var.network_interfaces : k => v if can(v.name) }
 
-  name                          = "${each.value.name}-nic"
-  location                      = var.location
-  resource_group_name           = local.resource_group_name
-  enable_accelerated_networking = each.key == keys(var.network_interfaces)[0] ? false : var.accelerated_networking
-  enable_ip_forwarding          = try(each.value.enable_ip_forwarding, each.key == keys(var.network_interfaces)[0] ? false : true)
-  tags                          = try(each.value.tags, var.tags)
+  name                           = "${each.value.name}-nic"
+  location                       = var.location
+  resource_group_name            = local.resource_group_name
+  accelerated_networking_enabled = each.key == keys(var.network_interfaces)[0] ? false : var.accelerated_networking_enabled
+  enable_ip_forwarding           = try(each.value.enable_ip_forwarding, each.key == keys(var.network_interfaces)[0] ? false : true)
+  tags                           = try(each.value.tags, var.tags)
 
   ip_configuration {
     name                          = "primary"

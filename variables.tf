@@ -170,7 +170,7 @@ variable "identity" {
   EOT
 }
 
-variable "accelerated_networking" {
+variable "accelerated_networking_enabled" {
   description = "Enable Azure accelerated networking (SR-IOV) for all network interfaces except the primary one."
   default     = true
   type        = bool

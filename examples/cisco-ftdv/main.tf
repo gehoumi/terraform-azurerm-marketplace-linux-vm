@@ -8,7 +8,7 @@ module "ftdv" {
     offer     = "cisco-ftdv"
     publisher = "cisco"
     sku       = "ftdv-azure-byol"
-    version   = "74.1.132"
+    version   = "77.0.16"
   }
   boot_diagnostics = true
 

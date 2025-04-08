@@ -47,7 +47,7 @@ module "ftdv" {
     offer     = "cisco-ftdv"
     publisher = "cisco"
     sku       = "ftdv-azure-byol"
-    version   = "74.1.132"
+    version   = "77.0.16"
   }
   boot_diagnostics = true
 
@@ -114,7 +114,7 @@ The module creates a password used to login the device.
 
 * Retrieve the created password:
 
-      terraform output password:
+      terraform output password
 
 
 * SSH the FTDv using cisco default username `admin` and the created password :
@@ -160,7 +160,7 @@ terraform destroy
 ```
 
 ## Reference
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -193,4 +193,4 @@ No inputs.
 | <a name="output_private_ip_addresses"></a> [private\_ip\_addresses](#output\_private\_ip\_addresses) | The map of private IP addresses and interfaces. |
 | <a name="output_public_ip_addresses"></a> [public\_ip\_addresses](#output\_public\_ip\_addresses) | The map of management IP addresses and interfaces. If `create_public_ip` was `true`, it is a public IP address, otherwise is 'null'. |
 | <a name="output_subnet_cidrs"></a> [subnet\_cidrs](#output\_subnet\_cidrs) | Subnet CIDRs (sourced or created). |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
