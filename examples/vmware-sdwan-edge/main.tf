@@ -9,7 +9,7 @@ locals {
 
 module "vmware-sdwan-edge" {
   source                       = "gehoumi/marketplace-linux-vm/azurerm"
-  version                      = "1.0.4"
+  version                      = "1.0.6"
   name                         = "VMware-SD-WAN-Edge"
   accept_marketplace_agreement = true # Accept the marketplace agreement for the image if required
 

@@ -175,7 +175,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | gehoumi/marketplace-linux-vm/azurerm | 1.0.3 |
+| <a name="module_ftdv"></a> [ftdv](#module\_ftdv) | gehoumi/marketplace-linux-vm/azurerm | 1.0.6 |
 
 ## Resources
 
