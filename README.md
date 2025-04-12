@@ -15,7 +15,7 @@ This Terraform module facilitates the deployment of a Linux-based Virtual Applia
 
 These examples demonstrate how to configure and deploy different vendor virtual appliances. The module is subject to the acceptance of the appliance image's "terms of service."
 
-We also welcome contributions! If you have use cases or examples, feel free to share them by following the steps outlined in the [Contributing](#contributing) section.
+If you have use cases or others examples, feel free to share them by following the steps outlined in the [Contributing](#contributing) section.
 
 ## Default Deployment
 
@@ -79,7 +79,7 @@ az vm image terms cancel --plan ftdv-azure-byol --publisher cisco --offer cisco-
 
 ## Contributing
 
-We welcome contributions to improve this Terraform module! To contribute, please follow these steps:
+Contributions are welcome to improve this Terraform module! To contribute, please follow these steps:
 
 1. **Fork the Repository**: Click the "Fork" button at the top of this repository to create your own copy.
 
