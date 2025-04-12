@@ -4,16 +4,22 @@
 ![Terraform registry downloads total](https://img.shields.io/badge/dynamic/json?color=green&label=downloads%20total&query=data.attributes.total&url=https%3A%2F%2Fregistry.terraform.io%2Fv2%2Fmodules%2Fgehoumi%2Fmarketplace-linux-vm%2Fazurerm%2Fdownloads%2Fsummary&style=flat-square)
 [![My Public profile](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&style=flat-square)](https://www.linkedin.com/in/gehoumi)
 # Deploy Virtual Appliance from Azure Marketplace using Terraform module
+This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). It supports the automatic provisioning of various virtual appliances such as:
 
-This Terraform module facilitates the deployment of a Linux-based Virtual Appliance from [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/home). This allows for the automatic provisioning of various virtual appliances such as Cisco Catalyst 8000V Edge SD-WAN, FTDv, ASAv, ACI-CLOUD-APIC-Virtual,Infoblox and more, subject to the acceptance of the appliance image's "terms of service."
+- [Cisco Catalyst 8000V Edge SD-WAN](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-catalyst-8000v)
+- [Cisco CSR 1000v](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-csr-1000v)
+- [Cisco FTDv](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-ftdv)
+- [Cisco ASAv](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-asav)
+- [VMware SD-WAN (VeloCloud) Virtual Edge](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/vmware-sdwan-edge)
+- [Infoblox IPAM](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/infoblox-nios)
+
+These examples demonstrate how to configure and deploy different vendor virtual appliances. The module is subject to the acceptance of the appliance image's "terms of service."
+
+We also welcome contributions! If you have use cases or examples, feel free to share them by following the steps outlined in the [Contributing](#contributing) section.
 
 ## Default Deployment
 
-By default, the module deploys the virtual appliance with four network interfaces on four distinct subnet. However, the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For instance, you can customize the number of network interfaces, subnets, routes, network security groups (NSGs) and other settings to align with your desired deployment scenarios.
-
-## Functional Examples
-
-For detailed guidance and real-world use cases, check out the [examples](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples) directory. These examples will help you understand how to configure and deploy different vendor virtual appliances. 
+By default, the module deploys the virtual appliance with four network interfaces on four distinct subnet. However, the module provides flexibility in configuring the deployment to suit your specific requirements. You have the ability to adjust the default behavior as needed to accommodate different configurations and preferences. For example, you can customize the number of network interfaces, subnets, routes, network security groups (NSGs) and other settings to align with your desired deployment scenarios.
 
 Please be aware that this module has not been tested for deployments involving Scale Sets or high availability configurations.
 
@@ -70,6 +76,46 @@ Example:
 ```bash
 az vm image terms cancel --plan ftdv-azure-byol --publisher cisco --offer cisco-ftdv
 ```
+
+## Contributing
+
+We welcome contributions to improve this Terraform module! To contribute, please follow these steps:
+
+1. **Fork the Repository**: Click the "Fork" button at the top of this repository to create your own copy.
+
+2. **Clone the Repository**: Clone your forked repository to your local machine using:
+  ```bash
+  git clone https://github.com/your-username/terraform-azurerm-marketplace-linux-vm.git
+  ```
+
+3. **Create a Branch**: Create a new branch for your feature or bug fix:
+  ```bash
+  git checkout -b feature-or-bugfix-name
+  ```
+
+4. **Make Changes**: Implement your changes or improvements. Ensure your code adheres to the existing style and conventions.
+
+5. **Test Your Changes**: Test your changes thoroughly to ensure they work as expected. If applicable, add or update tests.
+
+6. **Commit Your Changes**: Commit your changes with a clear and concise commit message:
+  ```bash
+  git commit -m "Description of your changes"
+  ```
+
+7. **Push to Your Fork**: Push your branch to your forked repository:
+  ```bash
+  git push origin feature-or-bugfix-name
+  ```
+
+8. **Submit a Pull Request**: Open a pull request from your branch to the `main` branch of this repository. Provide a detailed description of your changes and why they are necessary.
+
+### Guidelines
+
+- Ensure your code is well-documented and follows the existing code style.
+- Update the README.md file if your changes affect the usage or functionality of the module.
+- Be responsive to feedback during the review process.
+
+Thank you for contributing to this project! Your efforts help make this module better for everyone.!
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
