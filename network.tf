@@ -130,8 +130,8 @@ resource "azurerm_subnet_network_security_group_association" "this" {
 }
 
 resource "azurerm_subnet_route_table_association" "this" {
-  for_each = { for k, v in var.network_interfaces : k => v if can(v.route_table) }
+  for_each = { for k, v in var.network_interfaces : k => v if can(v.route_table_id) }
 
   subnet_id      = local.subnets[each.key].id
-  route_table_id = azurerm_route_table.this[each.value.route_table].id
+  route_table_id = try(azurerm_route_table.this[each.value.route_table_id].id, each.value.route_table_id)
 }

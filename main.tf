@@ -64,7 +64,7 @@ resource "azurerm_network_interface" "this" {
   location                       = var.location
   resource_group_name            = local.resource_group_name
   accelerated_networking_enabled = each.key == keys(var.network_interfaces)[0] ? false : var.accelerated_networking_enabled
-  enable_ip_forwarding           = try(each.value.enable_ip_forwarding, each.key == keys(var.network_interfaces)[0] ? false : true)
+  ip_forwarding_enabled          = try(each.value.ip_forwarding_enabled, each.key == keys(var.network_interfaces)[0] ? false : true)
   tags                           = try(each.value.tags, var.tags)
 
   ip_configuration {
@@ -180,4 +180,8 @@ resource "azurerm_linux_virtual_machine" "vm_linux" {
       error_message = "`username` in var.admin_ssh_keys should be the same as `admin_username` or `null`."
     }
   }
+
+  depends_on = [
+    azurerm_marketplace_agreement.default
+  ]
 }

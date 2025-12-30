@@ -411,7 +411,7 @@ variable "network_interfaces" {
     public_ip_name                  = optional(string)
     public_ip_resource_group        = optional(string)
     availability_zone               = optional(string)
-    enable_ip_forwarding            = optional(string)
+    ip_forwarding_enabled           = optional(string)
     tags                            = optional(map(string))
   }))
 
@@ -456,7 +456,7 @@ variable "network_interfaces" {
   - `public_ip_name`                  - Name of an existing public IP to associate to the interface, used only when `create_public_ip` is `false`.
   - `public_ip_resource_group`        - Name of a Resource Group that contains public IP resource to associate to the interface. When not specified defaults to `var.resource_group_name`. Used only when `create_public_ip` is `false`.
   - `availability_zone`               - Availability zone to create public IP in. If not specified, set based on `avzone` and `enable_zones`.
-  - `enable_ip_forwarding`            - If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.
+  - `ip_forwarding_enabled`            - If true, the network interface will not discard packets sent to an IP address other than the one assigned. If false, the network interface only accepts traffic destined to its IP address.
   - `tags`                            - Tags to assign to the interface and public IP (if created). Overrides contents of `tags` variable.
 
   EOF
