@@ -10,7 +10,7 @@ This Terraform module facilitates the deployment of a Linux-based Virtual Applia
 - [Cisco CSR 1000v](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-csr-1000v)
 - [Cisco FTDv](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-ftdv)
 - [Cisco ASAv](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/cisco-asav)
-- [VMware SD-WAN (VeloCloud) Virtual Edge](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/vmware-sdwan-edge)
+- [Arista SD-WAN (VeloCloud) Virtual Edge](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/velocloud-virtual-edge)
 - [Infoblox IPAM](https://github.com/gehoumi/terraform-azurerm-marketplace-linux-vm/tree/main/examples/infoblox-nios)
 
 These examples demonstrate how to configure and deploy different vendor virtual appliances. The module is subject to the acceptance of the appliance image's "terms of service."

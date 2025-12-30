@@ -7,24 +7,24 @@ locals {
   }]
 }
 
-module "vmware-sdwan-edge" {
+module "arista-networks-velocloud-edge" {
   source                       = "gehoumi/marketplace-linux-vm/azurerm"
-  version                      = "1.0.6"
-  name                         = "VMware-SD-WAN-Edge"
+  version                      = "1.0.7"
+  name                         = "velocloud-edge"
   accept_marketplace_agreement = true # Accept the marketplace agreement for the image if required
 
   source_image_reference = {
-    offer     = "sol-42222-bbj"
-    publisher = "vmware-inc"
-    sku       = "vmware_sdwan_452"
-    version   = "4.5.2"
+    offer     = "velocloud-virtual-edge"
+    publisher = "arista-networks"
+    sku       = "velocloud_edge_6101"
+    version   = "6.1.0"
   }
 
-  size           = "Standard_D2d_v4"
+  size           = "Standard_D2_v2"
   admin_ssh_keys = local.admin_ssh_keys
 
   # The address space for the virtual network. This is a CIDR block that defines the range of IP addresses for the virtual network.
-  address_space = ["172.16.0.0/16"]
+  address_space = ["10.168.0.0/16"]
 
   # The subnets for the virtual network. Each subnet is defined by its name and CIDR block.
   # The subnets are used to segment the network into different address spaces.
@@ -32,14 +32,42 @@ module "vmware-sdwan-edge" {
   network_interfaces = {
     "if-nic1" = {
       name                            = "public-subnet-wan-ge1"
-      address_prefixes                = ["172.16.0.0/24"]
+      address_prefixes                = ["10.168.0.0/24"]
       network_security_group          = "VELO_vVCE_SG"
+      route_table_id                  = "rt_1"
       enable_storage_service_endpoint = true
       create_public_ip                = true
     },
     "if-nic2" = {
       name             = "private-subnet-lan-ge2"
-      address_prefixes = ["172.16.1.0/24"]
+      address_prefixes = ["10.168.1.0/24"]
+      route_table_id   = "rt_2"
+    }
+  }
+
+  # The following example creates a public route table and a private route table.
+  # The public route table is associated with the public subnet and contains a default route to the Internet Gateway.
+  # The private route table is associated with the private subnet and contains a default route to the virtual appliance (Edge GE2 IP address).
+
+  route_tables = {
+    "rt_1" = {
+      name = "public-route-table"
+      routes = {
+        "route_ge1" = {
+          address_prefix = "0.0.0.0/0"
+          next_hop_type  = "Internet"
+        }
+      },
+    },
+    "rt_2" = {
+      name = "private-route-table"
+      routes = {
+        "route_ge2" = {
+          address_prefix         = "0.0.0.0/0"
+          next_hop_type          = "VirtualAppliance"
+          next_hop_in_ip_address = "10.168.1.4" # IP Address used for Edge LAN Interface GE2
+        }
+      },
     },
   }
 
@@ -102,33 +130,4 @@ velocloud:
   vco_ignore_cert_errors: ${local.IgnoreCertErrors}
 EOT
   )
-
-  # The following example creates a public route table and a private route table.
-  # The public route table is associated with the public subnet and contains a default route to the Internet Gateway.
-  # The private route table is associated with the private subnet and contains a default route to the virtual appliance (Edge GE2 IP address).
-  route_tables = {
-    "public-route-table" = {
-      name = "public-route-table"
-      routes = [
-        {
-          name           = "default-route"
-          address_prefix = "0.0.0.0/0"
-          next_hop_type  = "Internet"
-        }
-      ]
-    },
-    "private-route-table" = {
-      name = "private-route-table"
-      routes = [
-        {
-          name                   = "default-route"
-          address_prefix         = "0.0.0.0/0"
-          next_hop_type          = "VirtualAppliance"
-          next_hop_in_ip_address = "172.16.1.4" # IP Address used for Edge LAN Interface GE2
-        }
-      ]
-    }
-  }
-
 }
-
